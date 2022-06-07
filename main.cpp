@@ -55,8 +55,9 @@ class Key
 {
 private:
     int private_key;
-    int decrypt();
+    double decrypt(int commitment);
     int phi;
+    int d;
 
 public:
     Key();
@@ -64,6 +65,7 @@ public:
     int public_key;
     double encrypt(int message);
     int e;
+    double test(int commitment);
 
 
 };
@@ -76,6 +78,17 @@ Key::Key()
     N = p*q;
     phi = (p-1)*(q-1);
     e = ePrime();
+    // d  = (N + 1)/e;
+    for (int i = 0; i < 1000; i++)
+    {
+        /* code */
+        if((N+1)%e == 0){
+            d = (N+1)/e;
+            break;
+        }
+
+    }
+    
   
 }
 
@@ -89,13 +102,29 @@ double Key::encrypt(int message){
 
 }
 
+double Key::decrypt(int commitment){
+   long long message;
+   cout << sizeof(long long) << "\n";
+    cout << pow(commitment,d) << "This is the message\n";
+    message = ((long long )pow(commitment,d) % N);
+    cout << message << "This is the message oo\n";
+    return message;
+
+}
+
+double Key::test(int commitment){
+   double p =  decrypt(commitment);
+   return p;
+}
+
 int main()
 {
     Key *bob_key = new Key();
-    int a = bob_key->encrypt(10);
+    long long a = bob_key->encrypt(10);
+    long long b = bob_key->test(bob_key->encrypt(10));
     int p = bob_key->e;
  
-    cout << a << "  " << p;
+    cout << a << "  " << p << "  " << b;
 
 
     
